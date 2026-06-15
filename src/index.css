@@ -1,0 +1,36 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Lora:ital,wght@0,400..700;1,400..700&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --color-navy: #1b263b;
+  --color-copper: #c97c5d;
+  --color-slate: #415a77;
+  --color-ivory: #f8f5f2;
+  --color-teal: #2A9D8F;
+
+  --font-sans: 'Inter', sans-serif;
+  --font-display: 'Lora', serif;
+}
+
+
+body {
+  background-color: var(--color-ivory);
+  color: var(--color-navy);
+  font-family: var(--font-sans);
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-display);
+}
+
+/* Custom Utilities for Hide Scrollbar if needed */
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
