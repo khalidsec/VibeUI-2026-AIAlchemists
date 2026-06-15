@@ -12,7 +12,7 @@ export default function OrderConfirmation({ setCurrentPage, lastOrder }) {
   }
 
   return (
-    <div className="min-h-[80vh] flex items-center justify-center bg-ivory pt-32 pb-12 px-4">
+    <div className="min-h-[80vh] flex items-center justify-center bg-ivory pt-32 lg:pt-40 pb-12 px-4">
       <motion.div 
         initial={{ opacity: 0, scale: 0.9, y: 20 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}

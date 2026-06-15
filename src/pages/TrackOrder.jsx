@@ -28,12 +28,24 @@ export default function TrackOrder() {
     
     // Simulate API delay
     setTimeout(() => {
-      const order = ordersData.find(o => o.orderId.toLowerCase() === searchId.toLowerCase());
+      let order = ordersData.find(o => o.orderId.toLowerCase() === searchId.toLowerCase());
+      let delivery = null;
+
       if (!order) {
-        setError('Order not found. Please check your Order ID.');
+        // Try searching by tracking ID instead
+        delivery = deliveryData.find(d => d.trackingId && d.trackingId.toLowerCase() === searchId.toLowerCase());
+        if (delivery) {
+          order = ordersData.find(o => o.orderId === delivery.orderId);
+        }
+      }
+
+      if (!order) {
+        setError('Order not found. Please check your Order ID or Tracking ID.');
         setTrackingInfo(null);
       } else {
-        const delivery = deliveryData.find(d => d.orderId === order.orderId);
+        if (!delivery) {
+          delivery = deliveryData.find(d => d.orderId === order.orderId);
+        }
         setTrackingInfo({
           ...order,
           deliveryInfo: delivery || null
@@ -49,7 +61,7 @@ export default function TrackOrder() {
   };
 
   return (
-    <div className="min-h-screen bg-ivory py-12 px-4">
+    <div className="min-h-screen bg-ivory pt-32 lg:pt-40 pb-12 px-4">
       <div className="max-w-3xl mx-auto">
         <div className="text-center mb-10">
           <h1 className="text-4xl font-display font-bold text-navy mb-4">Track Your Order</h1>
@@ -65,7 +77,7 @@ export default function TrackOrder() {
                 type="text" 
                 value={searchId}
                 onChange={(e) => setSearchId(e.target.value)}
-                placeholder="e.g. ord_0001"
+                placeholder="e.g. ord_0001 or track_0001"
                 className="w-full pl-12 pr-4 py-3 bg-gray-50 border border-transparent rounded-xl focus:bg-white focus:border-navy focus:ring-2 focus:ring-navy/20 outline-none transition-all"
               />
             </div>

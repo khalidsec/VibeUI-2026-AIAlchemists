@@ -13,7 +13,7 @@ export default function Catalog() {
     : products.filter(p => p.category === activeCategory);
 
   return (
-    <div className="w-full min-h-screen bg-ivory pt-8 pb-32">
+    <div className="w-full min-h-screen bg-ivory pt-32 lg:pt-40 pb-32">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Header Section */}

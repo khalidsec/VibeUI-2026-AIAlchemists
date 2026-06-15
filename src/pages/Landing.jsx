@@ -34,7 +34,7 @@ export default function Landing({ setCurrentPage }) {
           <motion.div initial="hidden" animate="show" variants={fadeUp} className="max-w-xl pt-32 pb-16 lg:pt-40 lg:pb-16 flex flex-col h-full justify-between">
             <div className="flex-1 flex flex-col justify-center items-start">
 
-            <h1 className="font-display font-medium text-[2.75rem] sm:text-[3.5rem] md:text-[6rem] lg:text-[7.5rem] leading-[0.9] mb-8 tracking-[-0.03em] whitespace-nowrap">
+            <h1 className="font-display font-normal text-[2.5rem] sm:text-[3rem] md:text-[5rem] lg:text-[6.5rem] leading-[0.9] mb-8 tracking-[-0.03em] whitespace-nowrap">
               <div className="flex flex-nowrap items-center gap-x-3 sm:gap-x-4 md:gap-x-6">
                 <span>Where</span>
                 <motion.div
@@ -64,20 +64,7 @@ export default function Landing({ setCurrentPage }) {
             </button>
             </div>
 
-            {/* Bottom Links */}
-            <div className="mt-16 lg:mt-auto lg:pt-16 flex gap-12 md:gap-20 text-[14px] font-medium opacity-90 pb-4">
-              <div className="flex flex-col gap-2">
-                <a href="#" onClick={(e) => { e.preventDefault(); setCurrentPage('landing'); }} className="hover:text-copper transition-colors">Home</a>
-                <a href="#" onClick={(e) => { e.preventDefault(); setCurrentPage('catalog'); }} className="hover:text-copper transition-colors cursor-pointer">Order Dumplings</a>
-                <a href="#" onClick={(e) => { e.preventDefault(); setCurrentPage('track'); }} className="hover:text-copper transition-colors">Track Order</a>
-                <a href="#" onClick={(e) => { e.preventDefault(); setCurrentPage('seller'); }} className="hover:text-copper transition-colors">Join as Seller</a>
-                <a href="#" onClick={(e) => { e.preventDefault(); setCurrentPage('admin'); }} className="hover:text-copper transition-colors">Seller Panel</a>
-              </div>
-              <div className="flex flex-col justify-end gap-2">
-                <a href="mailto:reserv@hotmealbar.com" className="text-copper hover:text-navy border-b border-copper/30 transition-colors w-fit pb-0.5 text-base">reserv@hotmealbar.com</a>
-                <span className="opacity-70">© 2026 Hot Meal Bar</span>
-              </div>
-            </div>
+
           </motion.div>
 
           {/* Spacer for Desktop Grid */}
@@ -439,7 +426,7 @@ export default function Landing({ setCurrentPage }) {
 
           {/* Column 4: Tall Image */}
           <div className="w-[280px] md:w-[320px] h-[400px] md:h-[500px] flex-shrink-0 snap-center rounded-[24px] overflow-hidden shadow-lg shadow-navy/5">
-            <img src="https://images.unsplash.com/photo-1544025162-d76694265947?q=80&w=800&auto=format&fit=crop" alt="Fine dining" className="w-full h-full object-cover" />
+            <img src="https://images.unsplash.com/photo-1541696432-82c6da8ce7bf?q=80&w=800&auto=format&fit=crop" alt="Premium Dumplings" className="w-full h-full object-cover" />
           </div>
           
           {/* Extra Card for scrolling padding */}

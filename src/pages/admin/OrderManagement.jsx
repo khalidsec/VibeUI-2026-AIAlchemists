@@ -1,8 +1,24 @@
-import { useState, useMemo } from 'react';
-import { Search, Filter, ChevronLeft, ChevronRight, ArrowUpDown, ChevronDown, ChevronUp } from 'lucide-react';
+import { useState, useMemo, useEffect } from 'react';
+import { motion, useMotionValue, useTransform, animate } from 'framer-motion';
+import { Search, Filter, ChevronLeft, ChevronRight, ArrowUpDown, ChevronDown, ChevronUp, Package, DollarSign, Truck, Star } from 'lucide-react';
 
 import ordersData from '../../assets/orders.json';
 import deliveryData from '../../assets/delivery.json';
+import ratingsData from '../../assets/ratings.json';
+
+function CountUpNumber({ value, prefix = '', suffix = '', decimals = 0 }) {
+  const count = useMotionValue(0);
+  const rounded = useTransform(count, (latest) => 
+    prefix + Number(latest).toFixed(decimals) + suffix
+  );
+
+  useEffect(() => {
+    const controls = animate(count, value, { duration: 2, ease: "easeOut" });
+    return controls.stop;
+  }, [value, count]);
+
+  return <motion.span>{rounded}</motion.span>;
+}
 
 export default function OrderManagement() {
   const [searchTerm, setSearchTerm] = useState('');
@@ -98,6 +114,37 @@ export default function OrderManagement() {
         <div className="mb-8">
           <h1 className="text-3xl font-display font-bold text-navy mb-2">Order Management</h1>
           <p className="text-slate">View and manage all customer orders.</p>
+        </div>
+
+        {/* KPI Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          {[
+            { label: 'Total Orders', value: ordersData.length, icon: Package },
+            { label: 'Total Revenue', value: ordersData.reduce((sum, o) => sum + o.amount, 0), prefix: 'RM ', decimals: 2, icon: DollarSign },
+            { label: 'Active Deliveries', value: deliveryData.filter(d => d.status !== 'delivered').length, icon: Truck },
+            { label: 'Average Rating', value: ratingsData.reduce((sum, r) => sum + r.rating, 0) / ratingsData.length, decimals: 1, suffix: ' / 5.0', icon: Star }
+          ].map((kpi, index) => {
+            const Icon = kpi.icon;
+            return (
+              <motion.div 
+                key={kpi.label}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.1 }}
+                className="bg-navy p-6 rounded-2xl shadow-xl shadow-navy/10 relative overflow-hidden group"
+              >
+                <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                  <Icon className="w-16 h-16 text-white" />
+                </div>
+                <div className="relative z-10">
+                  <p className="text-slate-300 text-sm font-medium mb-1">{kpi.label}</p>
+                  <h3 className="text-3xl font-bold text-copper font-mono">
+                    <CountUpNumber value={kpi.value} prefix={kpi.prefix} suffix={kpi.suffix} decimals={kpi.decimals} />
+                  </h3>
+                </div>
+              </motion.div>
+            );
+          })}
         </div>
 
         {/* Controls */}

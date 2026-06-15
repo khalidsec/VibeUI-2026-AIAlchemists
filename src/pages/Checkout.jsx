@@ -1,10 +1,13 @@
 import { useState } from 'react';
-import { motion } from 'framer-motion';
-import { CreditCard, MapPin, CheckCircle2, AlertCircle, ShieldCheck } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { CreditCard, MapPin, CheckCircle2, AlertCircle, ShieldCheck, ChevronDown } from 'lucide-react';
 import { useCart } from '../context/CartContext';
+import ordersData from '../assets/orders.json';
+import deliveryData from '../assets/delivery.json';
 
 export default function Checkout({ setCurrentPage, setLastOrder }) {
   const { cartItems, cartTotal, clearCart } = useCart();
+  const [isCollegeOpen, setIsCollegeOpen] = useState(false);
   
   const [formData, setFormData] = useState({
     name: '',
@@ -17,9 +20,17 @@ export default function Checkout({ setCurrentPage, setLastOrder }) {
   });
   const [errors, setErrors] = useState({});
 
+  const colleges = [
+    { value: 'KTF', label: 'Kolej Tun Fatimah (KTF)' },
+    { value: 'K9', label: 'Kolej 9' },
+    { value: 'K10', label: 'Kolej 10' },
+    { value: 'KTR', label: 'Kolej Tun Razak (KTR)' },
+    { value: 'KDSE', label: 'Kolej Datin Seri Endon (KDSE)' }
+  ];
+
   if (cartItems.length === 0) {
     return (
-      <div className="min-h-[70vh] flex flex-col items-center justify-center bg-ivory px-4 pt-32">
+      <div className="min-h-[70vh] flex flex-col items-center justify-center bg-ivory px-4 pt-32 lg:pt-40">
         <h2 className="text-2xl font-bold text-navy mb-4">Your cart is empty</h2>
         <button 
           onClick={() => setCurrentPage('catalog')}
@@ -51,14 +62,35 @@ export default function Checkout({ setCurrentPage, setLastOrder }) {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (validate()) {
-      // Create mock order success
+      const generatedId = `ORD-${Math.floor(100000 + Math.random() * 900000)}`;
+      
+      // Create mock order success for confirmation page
       const newOrder = {
-        orderId: `ORD-${Math.floor(100000 + Math.random() * 900000)}`,
+        orderId: generatedId,
         items: [...cartItems],
         total: cartTotal + 5, // including delivery fee
         deliveryTime: '30-45 mins',
         customer: formData.name
       };
+      
+      // Mutate the mock databases directly so it shows up in Admin Panel and Tracking
+      ordersData.unshift({
+        orderId: generatedId,
+        customerId: `cust_${Math.floor(100 + Math.random() * 900)}`,
+        mealId: cartItems[0]?.id || "meal_001",
+        quantity: cartItems.reduce((acc, item) => acc + item.quantity, 0),
+        amount: cartTotal + 5,
+        status: "preparing",
+        orderDate: new Date().toISOString()
+      });
+
+      deliveryData.unshift({
+        trackingId: `track_${Math.floor(1000 + Math.random() * 9000)}`,
+        orderId: generatedId,
+        deliveryAgentId: `agent_${Math.floor(10 + Math.random() * 90)}`,
+        status: "preparing",
+        estimatedTime: "30 mins"
+      });
       
       setLastOrder(newOrder);
       clearCart();
@@ -76,7 +108,7 @@ export default function Checkout({ setCurrentPage, setLastOrder }) {
   };
 
   return (
-    <div className="min-h-screen bg-ivory pt-32 pb-12">
+    <div className="min-h-screen bg-ivory pt-32 lg:pt-40 pb-12">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <h1 className="text-3xl font-display font-bold text-navy mb-8">Checkout</h1>
         
@@ -118,21 +150,53 @@ export default function Checkout({ setCurrentPage, setLastOrder }) {
                     {errors.phone && <p className="text-copper text-xs mt-1 flex items-center gap-1"><AlertCircle className="w-3 h-3"/>{errors.phone}</p>}
                   </div>
                   
-                  <div>
+                  <div className="relative">
                     <label className="block text-sm font-medium text-slate mb-1">College / Hostel</label>
-                    <select 
-                      name="college"
-                      value={formData.college}
-                      onChange={handleChange}
-                      className={`w-full p-3 bg-gray-50 border ${errors.college ? 'border-copper' : 'border-gray-200'} rounded-lg focus:ring-2 focus:ring-navy outline-none text-navy`}
+                    
+                    {/* Background overlay for closing dropdown */}
+                    {isCollegeOpen && (
+                      <div className="fixed inset-0 z-10" onClick={() => setIsCollegeOpen(false)} />
+                    )}
+                    
+                    <div 
+                      onClick={() => setIsCollegeOpen(!isCollegeOpen)}
+                      className={`relative z-20 w-full p-3 bg-gray-50 border ${errors.college ? 'border-copper' : 'border-gray-200'} rounded-lg cursor-pointer flex justify-between items-center hover:border-gray-300 transition-colors focus:ring-2 focus:ring-navy outline-none`}
                     >
-                      <option value="">Select College</option>
-                      <option value="KTF">Kolej Tun Fatimah (KTF)</option>
-                      <option value="K9">Kolej 9</option>
-                      <option value="K10">Kolej 10</option>
-                      <option value="KTR">Kolej Tun Razak (KTR)</option>
-                      <option value="KDSE">Kolej Datin Seri Endon (KDSE)</option>
-                    </select>
+                      <span className={formData.college ? 'text-navy' : 'text-slate opacity-70'}>
+                        {formData.college ? colleges.find(c => c.value === formData.college)?.label : 'Select College'}
+                      </span>
+                      <ChevronDown className={`w-5 h-5 text-slate transition-transform duration-300 ${isCollegeOpen ? 'rotate-180' : ''}`} />
+                    </div>
+                    
+                    <AnimatePresence>
+                      {isCollegeOpen && (
+                        <motion.div
+                          initial={{ opacity: 0, y: -10, scaleY: 0.95 }}
+                          animate={{ opacity: 1, y: 0, scaleY: 1 }}
+                          exit={{ opacity: 0, y: -10, scaleY: 0.95 }}
+                          transition={{ duration: 0.2, ease: "easeOut" }}
+                          className="absolute z-30 w-full mt-2 bg-white border border-gray-100 rounded-lg shadow-xl overflow-hidden origin-top"
+                        >
+                          {colleges.map(c => (
+                            <div
+                              key={c.value}
+                              onClick={() => {
+                                handleChange({ target: { name: 'college', value: c.value }});
+                                setIsCollegeOpen(false);
+                                if (errors.college) setErrors(prev => ({ ...prev, college: '' }));
+                              }}
+                              className={`p-3 cursor-pointer transition-colors ${
+                                formData.college === c.value 
+                                  ? 'bg-navy/5 text-navy font-medium' 
+                                  : 'hover:bg-gray-50 text-slate hover:text-navy'
+                              }`}
+                            >
+                              {c.label}
+                            </div>
+                          ))}
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
                     {errors.college && <p className="text-copper text-xs mt-1 flex items-center gap-1"><AlertCircle className="w-3 h-3"/>{errors.college}</p>}
                   </div>
 
