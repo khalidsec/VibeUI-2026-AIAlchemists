@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { CreditCard, MapPin, CheckCircle2, AlertCircle } from 'lucide-react';
+import { CreditCard, MapPin, CheckCircle2, AlertCircle, ShieldCheck } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 
 export default function Checkout({ setCurrentPage, setLastOrder }) {
@@ -77,15 +77,15 @@ export default function Checkout({ setCurrentPage, setLastOrder }) {
 
   return (
     <div className="min-h-screen bg-ivory pt-32 pb-12">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <h1 className="text-3xl font-display font-bold text-navy mb-8">Checkout</h1>
         
-        <div className="grid lg:grid-cols-3 gap-8">
-          <div className="lg:col-span-2 space-y-6">
-            <form id="checkout-form" onSubmit={handleSubmit} className="space-y-6">
+        <div className="grid lg:grid-cols-3 gap-8 lg:gap-12">
+          <div className="lg:col-span-2 space-y-8">
+            <form id="checkout-form" onSubmit={handleSubmit} className="space-y-8">
               
               {/* Delivery Details */}
-              <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+              <div className="bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-gray-100">
                 <div className="flex items-center gap-2 mb-6 text-navy">
                   <MapPin className="w-5 h-5 text-copper" />
                   <h2 className="text-xl font-bold">Delivery Address</h2>
@@ -152,7 +152,7 @@ export default function Checkout({ setCurrentPage, setLastOrder }) {
               </div>
 
               {/* Payment Details */}
-              <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+              <div className="bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-gray-100">
                 <div className="flex items-center gap-2 mb-6 text-navy">
                   <CreditCard className="w-5 h-5 text-copper" />
                   <h2 className="text-xl font-bold">Payment Details</h2>
@@ -208,7 +208,7 @@ export default function Checkout({ setCurrentPage, setLastOrder }) {
 
           {/* Order Summary */}
           <div className="lg:col-span-1">
-            <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 sticky top-24">
+            <div className="bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-gray-100 sticky top-24">
               <h2 className="text-xl font-bold text-navy mb-4">Order Summary</h2>
               
               <div className="space-y-4 mb-6 max-h-[40vh] overflow-y-auto pr-2 custom-scrollbar">
