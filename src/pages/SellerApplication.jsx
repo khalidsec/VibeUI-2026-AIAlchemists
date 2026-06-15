@@ -1,9 +1,10 @@
 import { useState } from 'react';
-import { motion } from 'framer-motion';
-import { Briefcase, CheckCircle2, TrendingUp, DollarSign, Clock, AlertCircle } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Briefcase, CheckCircle2, TrendingUp, DollarSign, Clock, AlertCircle, ChevronDown } from 'lucide-react';
 
 export default function SellerApplication() {
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isCollegeOpen, setIsCollegeOpen] = useState(false);
   const [formData, setFormData] = useState({
     fullName: '',
     studentId: '',
@@ -14,6 +15,14 @@ export default function SellerApplication() {
     motivation: ''
   });
   const [errors, setErrors] = useState({});
+
+  const colleges = [
+    { value: 'KTF', label: 'Kolej Tun Fatimah (KTF)' },
+    { value: 'K9', label: 'Kolej 9' },
+    { value: 'K10', label: 'Kolej 10' },
+    { value: 'KTR', label: 'Kolej Tun Razak (KTR)' },
+    { value: 'KDSE', label: 'Kolej Datin Seri Endon (KDSE)' }
+  ];
 
   const validate = () => {
     const newErrors = {};
@@ -126,8 +135,8 @@ export default function SellerApplication() {
             <div className="bg-white p-6 md:p-10 rounded-3xl shadow-xl shadow-navy/5 border border-gray-100">
               <h2 className="text-2xl font-bold text-navy mb-8">Application Form</h2>
               
-              <form onSubmit={handleSubmit} className="space-y-6">
-                <div className="grid sm:grid-cols-2 gap-6">
+              <form onSubmit={handleSubmit} className="space-y-8">
+                <div className="grid sm:grid-cols-2 gap-8">
                   <div>
                     <label className="block text-sm font-medium text-slate mb-1">Full Name</label>
                     <input 
@@ -150,33 +159,60 @@ export default function SellerApplication() {
                     {errors.studentId && <p className="text-copper text-xs mt-1">{errors.studentId}</p>}
                   </div>
 
-                  <div>
+                  <div className="sm:col-span-2">
                     <label className="block text-sm font-medium text-slate mb-1">University</label>
-                    <select 
-                      name="university"
-                      value={formData.university}
-                      onChange={handleChange}
-                      className="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-navy outline-none text-navy"
-                    >
-                      <option value="UTM">Universiti Teknologi Malaysia (UTM)</option>
-                    </select>
+                    <div className="w-full p-3 bg-gray-100 border border-gray-200 rounded-xl text-slate flex items-center cursor-not-allowed">
+                      Universiti Teknologi Malaysia (UTM)
+                    </div>
                   </div>
 
-                  <div>
+                  <div className="sm:col-span-2 relative">
                     <label className="block text-sm font-medium text-slate mb-1">Target College/Hostel</label>
-                    <select 
-                      name="college"
-                      value={formData.college}
-                      onChange={handleChange}
-                      className={`w-full p-3 bg-gray-50 border ${errors.college ? 'border-copper' : 'border-gray-200'} rounded-xl focus:ring-2 focus:ring-navy outline-none`}
+                    
+                    {/* Background overlay for closing dropdown */}
+                    {isCollegeOpen && (
+                      <div className="fixed inset-0 z-10" onClick={() => setIsCollegeOpen(false)} />
+                    )}
+                    
+                    <div 
+                      onClick={() => setIsCollegeOpen(!isCollegeOpen)}
+                      className={`relative z-20 w-full p-3 bg-gray-50 border ${errors.college ? 'border-copper' : 'border-gray-200'} rounded-xl cursor-pointer flex justify-between items-center hover:border-gray-300 transition-colors focus:ring-2 focus:ring-navy outline-none`}
                     >
-                      <option value="">Select College to Cover</option>
-                      <option value="KTF">Kolej Tun Fatimah (KTF)</option>
-                      <option value="K9">Kolej 9</option>
-                      <option value="K10">Kolej 10</option>
-                      <option value="KTR">Kolej Tun Razak (KTR)</option>
-                      <option value="KDSE">Kolej Datin Seri Endon (KDSE)</option>
-                    </select>
+                      <span className={formData.college ? 'text-navy' : 'text-slate opacity-70'}>
+                        {formData.college ? colleges.find(c => c.value === formData.college)?.label : 'Select College to Cover'}
+                      </span>
+                      <ChevronDown className={`w-5 h-5 text-slate transition-transform duration-300 ${isCollegeOpen ? 'rotate-180' : ''}`} />
+                    </div>
+                    
+                    <AnimatePresence>
+                      {isCollegeOpen && (
+                        <motion.div
+                          initial={{ opacity: 0, y: -10, scaleY: 0.95 }}
+                          animate={{ opacity: 1, y: 0, scaleY: 1 }}
+                          exit={{ opacity: 0, y: -10, scaleY: 0.95 }}
+                          transition={{ duration: 0.2, ease: "easeOut" }}
+                          className="absolute z-30 w-full mt-2 bg-white border border-gray-100 rounded-xl shadow-xl overflow-hidden origin-top"
+                        >
+                          {colleges.map(c => (
+                            <div
+                              key={c.value}
+                              onClick={() => {
+                                handleChange({ target: { name: 'college', value: c.value }});
+                                setIsCollegeOpen(false);
+                                if (errors.college) setErrors(prev => ({ ...prev, college: '' }));
+                              }}
+                              className={`p-3 cursor-pointer transition-colors ${
+                                formData.college === c.value 
+                                  ? 'bg-navy/5 text-navy font-medium' 
+                                  : 'hover:bg-gray-50 text-slate hover:text-navy'
+                              }`}
+                            >
+                              {c.label}
+                            </div>
+                          ))}
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
                     {errors.college && <p className="text-copper text-xs mt-1">{errors.college}</p>}
                   </div>
 
