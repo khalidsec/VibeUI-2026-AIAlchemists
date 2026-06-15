@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import { ArrowRight, Snowflake, Truck, ShieldCheck, Quote, Star, Plus, Utensils, ChevronDown } from 'lucide-react';
 import { products } from '../data/products';
+import { useCart } from '../context/CartContext';
 import heroVideo from '../assets/sponsor/Dump2.mp4';
 
 const testimonials = [
@@ -19,6 +20,7 @@ const brands = ["Premium Quality", "Halal Certified", "Handcrafted", "Locally So
 
 export default function Landing({ setCurrentPage }) {
   const showcaseProducts = products.filter(p => p.popular).slice(0, 3);
+  const { addToCart } = useCart();
 
   const fadeUp = {
     hidden: { opacity: 0, y: 40 },
@@ -193,6 +195,40 @@ export default function Landing({ setCurrentPage }) {
         </div>
       </section>
 
+      {/* 3.5 Quick Reorder */}
+      <section className="bg-white text-navy py-16 border-t border-navy/5">
+        <div className="max-w-[1400px] mx-auto px-6">
+          <div className="flex justify-between items-end mb-10">
+            <div>
+              <p className="uppercase tracking-[0.15em] text-xs font-semibold text-copper mb-2">Favorites</p>
+              <h2 className="font-display text-3xl">Quick Reorder</h2>
+            </div>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {showcaseProducts.map((product) => (
+              <div key={`reorder-${product.id}`} className="bg-ivory rounded-2xl p-4 flex items-center gap-4 shadow-sm border border-navy/5 transition-shadow hover:shadow-md">
+                <div className="w-20 h-20 rounded-xl overflow-hidden flex-shrink-0">
+                  <img src={product.image} alt={product.name} className="w-full h-full object-cover" />
+                </div>
+                <div className="flex-1">
+                  <h3 className="font-bold text-navy text-[15px] line-clamp-1">{product.name}</h3>
+                  <p className="text-copper font-bold text-sm mb-2">RM {product.price.toFixed(2)}</p>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      addToCart(product);
+                    }}
+                    className="text-xs font-bold bg-navy text-white px-4 py-1.5 rounded-full hover:bg-copper transition-colors"
+                  >
+                    Add to Cart
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* 4. Marquee (Navy) */}
       <section className="bg-navy text-ivory py-16 overflow-hidden border-y border-ivory/10">
         <div className="flex w-max relative">
@@ -271,94 +307,28 @@ export default function Landing({ setCurrentPage }) {
         </div>
       </section>
 
-      {/* 6. Reserve Table (Image background, Dark) */}
+      {/* 6. Become a Campus Seller */}
       <section 
         className="relative text-ivory py-24 md:py-32 bg-cover bg-center"
-        style={{ backgroundImage: 'url("https://images.unsplash.com/photo-1563245372-f21724e3856d?q=80&w=2000&auto=format&fit=crop")' }}
+        style={{ backgroundImage: 'url("https://images.unsplash.com/photo-1544025162-d76694265947?q=80&w=2000&auto=format&fit=crop")' }}
       >
-        {/* Dark overlay for text readability */}
-        <div className="absolute inset-0 bg-[#111815]/80"></div>
+        <div className="absolute inset-0 bg-[#1a3630]/90"></div>
         
-        <div className="max-w-[1400px] mx-auto px-6 grid md:grid-cols-2 gap-16 md:gap-20 items-center relative z-10">
-          
-          {/* Left Text */}
-          <motion.div initial="hidden" whileInView="show" viewport={{ once: true }} variants={fadeUp} className="max-w-xl">
-            <p className="uppercase tracking-[0.1em] text-[11px] font-bold text-copper mb-6">
-              RESERVE YOUR TABLE
+        <div className="max-w-[1400px] mx-auto px-6 relative z-10 text-center">
+          <motion.div initial="hidden" whileInView="show" viewport={{ once: true }} variants={fadeUp} className="max-w-2xl mx-auto">
+            <p className="uppercase tracking-[0.1em] text-[12px] font-bold text-copper mb-6">
+              JOIN OUR ECOSYSTEM
             </p>
             <h2 className="font-display text-4xl sm:text-5xl md:text-[4rem] leading-[1.05] mb-8 text-[#e8e4d8]">
-              Your seat awaits.<br/>Reserve a memorable dining experience
+              Become a Campus Seller
             </h2>
-            <p className="opacity-80 text-[15px] mb-8 max-w-sm text-[#e8e4d8] leading-relaxed">
-              Prefer dining at home? Enjoy our signature dishes delivered fresh to your door.
+            <p className="opacity-90 text-[16px] mb-10 text-[#e8e4d8] leading-relaxed max-w-lg mx-auto">
+              Partner with Hot Meal Bar. Distribute premium frozen dumplings to your hostel mates. Zero upfront cost, flexible hours, and earn RM500+ a month.
             </p>
-            <button onClick={() => setCurrentPage('catalog')} className="flex items-center gap-2 text-[12px] font-bold tracking-[0.05em] uppercase hover:text-copper transition-colors border-b border-ivory/30 pb-1 w-max">
-              ORDER ONLINE <Utensils className="w-4 h-4 ml-1" />
+            <button onClick={() => setCurrentPage('seller')} className="bg-copper text-white px-10 py-4 rounded-full font-bold hover:bg-white hover:text-navy transition-colors text-[15px]">
+              Apply Now
             </button>
           </motion.div>
-          
-          {/* Right Form Card */}
-          <motion.div initial="hidden" whileInView="show" viewport={{ once: true }} variants={fadeUp} className="bg-white text-navy p-10 md:p-14 rounded-[32px] shadow-2xl">
-            <h3 className="font-medium text-[28px] mb-10">Reserve your table</h3>
-            
-            <div className="flex flex-col gap-8">
-              {/* Name */}
-              <input 
-                type="text" 
-                placeholder="Full name *" 
-                className="w-full border-b border-navy/20 bg-transparent pb-2 text-[14px] placeholder-navy/70 focus:outline-none focus:border-navy transition-colors" 
-              />
-              
-              {/* Email & Phone */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
-                <input 
-                  type="email" 
-                  placeholder="Email *" 
-                  className="w-full border-b border-navy/20 bg-transparent pb-2 text-[14px] placeholder-navy/70 focus:outline-none focus:border-navy transition-colors" 
-                />
-                <input 
-                  type="text" 
-                  placeholder="Phone number *" 
-                  className="w-full border-b border-navy/20 bg-transparent pb-2 text-[14px] placeholder-navy/70 focus:outline-none focus:border-navy transition-colors" 
-                />
-              </div>
-
-              {/* Date & Guests */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
-                <input 
-                  type="text" 
-                  placeholder="Date *" 
-                  className="w-full border-b border-navy/20 bg-transparent pb-2 text-[14px] placeholder-navy/70 focus:outline-none focus:border-navy transition-colors" 
-                />
-                <div className="relative">
-                  <select defaultValue="" className="w-full border-b border-navy/20 bg-transparent pb-2 text-[14px] text-navy/70 appearance-none focus:outline-none cursor-pointer">
-                    <option value="" disabled>Guests *</option>
-                    <option value="1">1 Person</option>
-                    <option value="2">2 People</option>
-                    <option value="3">3 People</option>
-                    <option value="4">4+ People</option>
-                  </select>
-                  <ChevronDown className="w-4 h-4 absolute right-0 top-0 text-navy/70 pointer-events-none" />
-                </div>
-              </div>
-
-              {/* Notes */}
-              <input 
-                type="text" 
-                placeholder="Notes *" 
-                className="w-full border-b border-navy/20 bg-transparent pb-2 text-[14px] placeholder-navy/70 focus:outline-none focus:border-navy transition-colors mt-2" 
-              />
-
-              {/* Submit Button */}
-              <button 
-                onClick={() => alert('Reservation submitted!')} 
-                className="mt-6 bg-navy text-ivory px-8 py-3.5 rounded-full text-[14px] font-medium hover:bg-copper transition-colors w-max"
-              >
-                Reserve Now
-              </button>
-            </div>
-          </motion.div>
-
         </div>
       </section>
 
@@ -446,36 +416,18 @@ export default function Landing({ setCurrentPage }) {
         `}} />
       </section>
 
-      {/* 8. Blog Layout (Cream, 3-column) */}
-      <section className="bg-ivory text-navy py-32">
-        <div className="max-w-[1400px] mx-auto px-6">
-          <motion.div initial="hidden" whileInView="show" viewport={{ once: true }} variants={fadeUp} className="flex justify-between items-end mb-16">
-            <div>
-              <p className="uppercase tracking-[0.15em] text-xs font-semibold text-copper mb-4">
-                Insights
-              </p>
-              <h2 className="font-display text-5xl">Stories from our kitchen</h2>
-            </div>
-            <button className="hidden md:block border-b border-navy pb-1 text-sm font-medium hover:text-copper hover:border-copper transition-colors">
-              View all stories
+      {/* 8. Promo Banner */}
+      <section className="bg-ivory py-24">
+        <div className="max-w-[1200px] mx-auto px-6">
+          <motion.div initial="hidden" whileInView="show" viewport={{ once: true }} variants={fadeUp} className="bg-gradient-to-r from-copper to-[#b86b4d] rounded-[32px] p-12 md:p-16 text-center text-white shadow-2xl shadow-copper/20">
+            <h2 className="font-display text-4xl md:text-5xl lg:text-6xl mb-6">15% OFF First Order</h2>
+            <p className="text-lg md:text-xl opacity-90 mb-10 max-w-xl mx-auto">
+              Experience restaurant-quality handmade dumplings right in your room. Use code <strong>VIBE2026</strong> at checkout.
+            </p>
+            <button onClick={() => setCurrentPage('catalog')} className="bg-white text-copper px-10 py-4 rounded-full font-bold text-[15px] hover:bg-navy hover:text-white transition-colors shadow-lg shadow-black/10">
+              Order Now
             </button>
           </motion.div>
-
-          <div className="grid md:grid-cols-3 gap-8">
-            {blogPosts.map((post, idx) => (
-              <motion.div key={post.id} initial="hidden" whileInView="show" viewport={{ once: true }} variants={fadeUp} custom={idx} className="group cursor-pointer">
-                <div className="aspect-[4/3] rounded-[16px] overflow-hidden mb-6">
-                  <img src={post.image} alt={post.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
-                </div>
-                <div className="flex items-center gap-4 text-xs font-semibold uppercase tracking-wider mb-4 opacity-60">
-                  <span className="text-copper">{post.category}</span>
-                  <span className="w-1 h-1 bg-navy/30 rounded-full" />
-                  <span>{post.date}</span>
-                </div>
-                <h3 className="font-display text-2xl leading-[1.3] group-hover:text-copper transition-colors">{post.title}</h3>
-              </motion.div>
-            ))}
-          </div>
         </div>
       </section>
 
